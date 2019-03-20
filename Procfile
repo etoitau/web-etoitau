@@ -1,1 +1,1 @@
-web: gunicorn RPSer.wsgi
+web: gunicorn web_project.wsgi
