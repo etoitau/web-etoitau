@@ -1,1 +1,1 @@
-web: gunicorn etoitau.wsgi
+web: gunicorn RPSer.wsgi
