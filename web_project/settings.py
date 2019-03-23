@@ -15,10 +15,22 @@ import dj_database_url
 import dotenv
 import django_heroku
 from decouple import config, Csv
+"""
+#is this picking up staticfiles folder in root? I think so
+def look_folder_tree(root):
+    result = ()
+    for dir_name, sub_dirs, file_names in os.walk(root):
+        for sub_dir_name in sub_dirs:
+            if sub_dir_name != 'staticfiles':
+                result += (os.path.join(dir_name, sub_dir_name),)
+    return result
+"""
 
 # Build paths inside the project like this: os.path.join(BASE_DIR, ...)
 BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
+
 PROJECT_ROOT = os.path.dirname(os.path.abspath(__file__))
+
 dotenv_file = os.path.join(BASE_DIR, ".env")
 if os.path.isfile(dotenv_file):
     dotenv.load_dotenv(dotenv_file)
@@ -41,11 +53,12 @@ INSTALLED_APPS = [
     'django.contrib.contenttypes',
     'django.contrib.sessions',
     'django.contrib.messages',
-    'django.contrib.staticfiles',
     # Disable Django's own staticfiles handling in favour of WhiteNoise, for
     # greater consistency between gunicorn and `./manage.py runserver`. See:
     # http://whitenoise.evans.io/en/stable/django.html#using-whitenoise-in-development
     'whitenoise.runserver_nostatic',
+    'django.contrib.staticfiles',
+    'home',
     'RPSer',
 ]
 
@@ -109,6 +122,8 @@ AUTH_PASSWORD_VALIDATORS = [
     },
 ]
 
+LOGIN_REDIRECT_URL = 'rpser'
+LOGOUT_REDIRECT_URL = 'login'
 
 # Internationalization
 # https://docs.djangoproject.com/en/2.1/topics/i18n/
@@ -135,21 +150,30 @@ ALLOWED_HOSTS = ['*']
 # Static files (CSS, JavaScript, Images)
 # https://docs.djangoproject.com/en/2.1/howto/static-files/
 
-STATIC_URL = '/static/'
-
 STATIC_ROOT = os.path.join(BASE_DIR, 'staticfiles')
+STATIC_URL = '/static/'
 
 # Extra places for collectstatic to find static files.
 # commented out for test. was getting error on collectstatic looking in wrong dir
+
+#trying to be explicit
 #STATICFILES_DIRS = [
-#    os.path.join(PROJECT_ROOT, 'static'),
+#    os.path.join(BASE_DIR, 'home', 'static'),
+#    os.path.join(BASE_DIR, 'RPSer', 'static'),
+#]
+
+#scheme with function above
+#STATICFILES_DIRS = look_folder_tree(STATIC_ROOT)
+
+# how they did in tutorial:
+#STATICFILES_DIRS = [
+#[
+#    os.path.join(BASE_DIR, 'static'),
 #]
 
 # Simplified static file serving.
 # https://warehouse.python.org/project/whitenoise/
 STATICFILES_STORAGE = 'whitenoise.storage.CompressedManifestStaticFilesStorage'
-
-#STATIC_ROOT = "/home/cfedeploy/webapps/cfehome_static_root/"
 
 MEDIA_URL = "/media/"
 

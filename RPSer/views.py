@@ -1,44 +1,44 @@
-import re
-from datetime import datetime
-from django.http import HttpResponse
-from django.shortcuts import render
-from django.shortcuts import redirect
-from RPSer.forms import LogMessageForm
-from RPSer.models import LogMessage
-from django.views.generic import ListView
+from django.shortcuts import render, redirect
+from django.contrib.auth import login, authenticate
+from django.contrib.auth.forms import UserCreationForm
+from django.contrib.auth.models import User
+from RPSer.models import *
+# from django.http import JsonResponse
+import json
 
-class HomeListView(ListView):
-    """Renders the home page, with a list of all messages."""
-    model = LogMessage
+import requests
 
-    def get_context_data(self, **kwargs):
-        context = super(HomeListView, self).get_context_data(**kwargs)
-        return context
+# context dict for page use
+# context = {"user": User, "username": "all"}
+# user.is_authenticated
+# user.id
+# user.username
 
-def about(request):
-    return render(request, "RPSer/about.html")
+#return JsonResponse(data)
 
-def contact(request):
-    return render(request, "RPSer/contact.html")
+# ajax
+# in js use $.get("<url path directed in urls to view>"+<string (in url path)> that tells what to do>), a js function to execute maybe) 
+# in urls then path is like path('<url>/<str:<variable>>, <view>)
 
-def hello_there(request, name):
-    return render(
-        request,
-        'RPSer/hello_there.html',
-        {
-            'name': name,
-            'date': datetime.now()
-        }
-    )
 
-def log_message(request):
-    form = LogMessageForm(request.POST or None)
+def rpser(request):
+    userinfo = dict()
+    userinfo["loggedin"] = request.user.is_authenticated
+    if userinfo["loggedin"]:
+        userinfo["username"] = request.user.username
+    context = {"userinfo": userinfo, "userinfoj": json.dumps(userinfo)}
+    return render(request, "RPSer/rpser.html", context=context)
 
-    if request.method == "POST":
+def signup(request):
+    if request.method == 'POST':
+        form = UserCreationForm(request.POST)
         if form.is_valid():
-            message = form.save(commit=False)
-            message.log_date = datetime.now()
-            message.save()
-            return redirect("home")
+            form.save()
+            username = form.cleaned_data.get('username')
+            raw_password = form.cleaned_data.get('password1')
+            user = authenticate(username=username, password=raw_password)
+            login(request, user)
+            return redirect('rpser')
     else:
-        return render(request, "RPSer/log_message.html", {"form": form})
+        form = UserCreationForm()
+        return render(request, 'RPSer/signup.html', {'form': form})

@@ -1,0 +1,28 @@
+{% extends "home/layout.html" %}
+{% load static %}
+{% block title %}
+    Computer Science
+{% endblock %}
+{% block content %}
+    <p>I'm very excited to be launching into a new career in computer science. I've been into programming since
+        copying BASIC programs out of a book as a kid (it was rough before the internet, y'all). I got onto a
+        different path that was very rewarding (see SE), but am looking forward to solving new
+        problems in new and exciting ways.</p>
+    <p> On <a href="https://github.com/etoitau">GitHub</a></p>
+    Hobby Projects:
+    <ul>
+        <li>This webpage/app uses the Django Web framework (Python), a Gunicorn server, Whitenoise for 
+            static file serving, and the Heroku cloud platform. The database is SQLite in the 
+            development environment and PostgreSQL in production. It's developed in Visual Studio 
+            Code. And version control uses Sourcetree and GitHub</li>
+        <li><a href="{% url 'rpser' %}">RPSer</a> is a bot that tries to learn from your past plays 
+            to beat you at Rock Paper Scissors</li>
+    </ul>    
+    Coursework:
+    <ul>
+        <li>Harvard (edX) - CS50: Introduction to Computer Science (C, Python, JavaScript, SQL, HTML, CSS, Flask, Jinja2)</li>
+        <li>Stanford - CEE 282: Nonlinear Structural Analysis (MATLAB)</li>
+        <li>UC Berkeley - E77: Introduction to Computer Programming for Scientists and Engineers (MATLAB)</li>
+        <li>High School - C++ Programming</li>
+    </ul>
+{% endblock %}

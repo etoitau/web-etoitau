@@ -1,0 +1,127 @@
+{% extends "RPSer/layout.html" %}
+{% block rpser_content %}
+    Test your skill against...
+    <div class="bigtx">The RPSer!</div>
+    <table class="table table-sm table-bordered center" style="width: auto">
+        <caption><div id="modecheck">Check mode to start</div></caption>    
+        <thead class="table-primary bg">
+            <tr>
+                <th scope="col" colspan="2">
+                </th>
+                <th scope="col" colspan="3">
+                    Score
+                </th>
+            </tr>
+            <tr>
+                <th scope="col" colspan="2">
+                    Mode
+                </th>
+                <th scope="col">
+                    You
+                </th>
+                <th scope="col">
+                    RPSer
+                </th>
+                <th scope="col">
+                    Draws
+                </th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr>
+                <td>Personal</td>
+                <td><input type="radio" id="vusr" onclick="clickedvusr();"></td>
+                <td><div id="usrpts"></div></td>
+                <td><div id="aivusrpts"></div></td>
+                <td><div id="vusrtie"></div></td>
+            </tr>
+            <tr>
+                <td>All</td>
+                <td><input type="radio" id="vall" onclick="clickedvall();" checked="checked"></td>
+                <td><div id="allpts"></div></td>
+                <td><div id="aivallpts"></div></td>
+                <td><div id="valltie"></div></td>
+            </tr>
+        </tbody>
+    </table>
+        RPSer's throw: <div id="aithrow"></div><br>
+        Your throw: <input type="button" id="rock" value="Rock">
+            <input type="button" id="paper" value="Paper">
+            <input type="button" id="scissors" value="Scissors">
+        <br>
+        <div id="outcome"></div>
+        <br>
+{% endblock %}
+{% block rpser_script %}
+<script>
+    var userinfoj = JSON.parse('{{ userinfoj | escapejs }}');
+    updatescoreboard();
+    var mode = "vall";
+    var rpser_last = "N";
+    var user_last = "N";
+    var nextthrow = "N"; // if N shows up this never changes and something's wrong
+    getthrow();
+
+    function updatescoreboard() {
+        url = "RPSer/getscores/";
+        jQuery.ajax({
+            type: "POST",
+            url: url,
+            data: {username: userinfoj.username},
+            success: function (data) {
+                var scores = JSON.parse('{{ data | escapejs }}');
+                document.getElementById("usrpts").innerHTML = scores.userwins;
+                document.getElementById("aivusrpts").innerHTML = scores.RPSerwins;
+                document.getElementById("vusrtie").innerHTML = scores.draws;
+            }
+        });
+        jQuery.ajax({
+            type: "POST",
+            url: url,
+            data: {username: "all"},
+            success: function (data) {
+                var scores = JSON.parse('{{ data | escapejs }}');
+                document.getElementById("allpts").innerHTML = scores.userwins;
+                document.getElementById("aivallpts").innerHTML = scores.RPSerwins;
+                document.getElementById("valltie").innerHTML = scores.draws;
+            }
+        });
+    }
+    // if personal radio changes... 
+    function clickedvusr() {
+        if(userinfoj.loggedin) {
+            mode = "vusr";
+            document.getElementById("vall").checked = false;
+            document.getElementById("modecheck").innerHTML = 'Select "All" to play against general AI';
+            getthrow();
+        }  
+        else {
+            document.getElementById("vusr").checked = false;
+            document.getElementById("modecheck").innerHTML = "Log in to play against personalized AI";
+        }  
+    };
+    function clickedvall() {
+        document.getElementById("vusr").checked = false;
+        mode = "vall";
+        document.getElementById("modecheck").innerHTML = 'Select "Personal" to play against personalized AI';
+        //throw = getthrow(username, current);
+    };
+    function getthrow() {
+        url = "RPSer/getthrow/";
+        jQuery.ajax({
+            type: "POST",
+            url: url,
+            data: {username: userinfoj.username, rpser_last: rpser_last, user_last: user_last},
+            success: function (data) {
+                nextthrow = JSON.parse('{{ data | escapejs }}');
+            }
+        });
+    };
+    // function userthrew(userthrow) {
+    // show rpser's throw
+    // update brain
+    // update scoreboard    
+    // }
+
+</script>
+{% endblock %}

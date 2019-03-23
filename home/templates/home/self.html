@@ -1,0 +1,16 @@
+{% extends "home/layout.html" %}
+{% load static %}
+{% block title %}
+    Self
+{% endblock %}
+{% block content %}
+    <p>About me:</p>
+    <p>I was born in Texas, spent my childhood in Missouri, and have been in California since high school. After <a href="https://dshs.djusd.net/">high school</a>
+        I went to <a href="https://www.ce.berkeley.edu/">UC Berkeley</a> for a BS and
+        <a href="https://cee.stanford.edu/programs/structural-engineering-geomechanics-program">Stanford</a> for a MS. These days I live in Oakland.</p>
+    <p>I love my <a href="#fam">family</a>, the <a href="#outdoor">outdoors</a>, <a href="#city">cities</a>, <a href="#music">music</a>, books, and movies.</p>
+    <p><a id="fam"></a><img alt="Family photo" src="{% static 'home/media/fam.jpg' %}"/></p>
+    <p><a id="outdoor"></a><img alt="On Mt Diablo" src="{% static 'home/media/outdoor.jpg' %}"/></p>
+    <p><a id="city"></a><img alt="Transbay Terminal" src="{% static 'home/media/city.jpg' %}"/></p>
+    <p><a id="music"></a><img alt="Alt J at the Greek Theater" src="{% static 'home/media/music.jpg' %}"/></p>
+{% endblock %}

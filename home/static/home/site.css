@@ -1,0 +1,91 @@
+/*
+    Kyle Chatman 2019
+
+    backgrounds are from www.subtlepatterns.com
+    All photos are my own
+*/
+
+.header {
+    min-height: 25px;
+    height: 100%
+}
+
+.nav {
+    border-style: solid none solid none;
+    padding: 25px, 0, 0, 0;
+}
+
+.yellowstripe {
+    background-color: #FED768;
+    background-image: url("media/halftone-yellow.png");
+    color: Black;
+    font-family: "Courier New", "Courier", monospace;
+    font-size: 1.2em;
+}
+
+.bg {
+    background-color: #FED768;
+    background-image: url("media/halftone-yellow.png");
+}
+
+a, a:hover {
+    text-decoration: none;
+    color: inherit;
+}
+
+body {
+    background-image: url("media/topography.png");
+    background-color: #F2F2F2;
+    color: Black;
+    font-family: "Courier New", "Courier", monospace;
+    font-size: 1em;
+    padding-bottom: 75px;
+}
+
+.footer{
+    position: fixed;
+    padding: 10px 0;
+    bottom: 0;
+    width: 100%;
+    border-style: solid none none none;
+}
+
+img {
+    max-width: 100%;
+    max-height: 100%;
+}
+
+.avoidwrap {
+    display:inline-block; 
+}
+
+.box {
+    border-style: none solid solid solid;
+}
+
+.right {
+    float: right;
+}
+
+.titletx {
+    font-weight: 600;
+}
+
+.bigtx {
+    font-size: 2em;
+}
+
+table.table-bordered{
+    border:2px solid black;
+    margin-top:20px;
+}
+table.table-bordered > thead > tr > th{
+    border:1px solid black;
+}
+table.table-bordered > tbody > tr > td{
+    border:1px solid black;
+}
+
+.center {
+    text-align: center
+}

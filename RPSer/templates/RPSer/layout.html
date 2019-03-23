@@ -1,27 +1,41 @@
-<!DOCTYPE html>
-<html>
-<head>
-    <meta charset="utf-8"/>
-    <title>{% block title %}{% endblock %}</title>
-    {% load static %}
-    <link rel="stylesheet" type="text/css" href="{% static 'RPSer/site.css' %}"/>
-</head>
-
-<body>
-<div class="navbar">
-    <a href="{% url 'home' %}" class="navbar-brand">Home</a>
-    <a href="{% url 'log' %}" class="navbar-item">Log Message</a>
-    <a href="{% url 'about' %}" class="navbar-item">About</a>
-    <a href="{% url 'contact' %}" class="navbar-item">Contact</a>
-</div>
-
-<div class="body-content">
-    {% block content %}
+{% extends "home/layout.html" %}
+{% block title %}
+    The RPSer
+{% endblock %}
+{% block content %}
+<div class="nav yellowstripe">
+        <div class="container box">
+            <div class="row">
+                <div class="col-12">
+                    <a href="{% url 'rpser' %}" class="titletx">The RPSer</a>
+                    <div class="right">
+                        {% if userinfo.loggedin %}
+                            {{userinfo.username}}&emsp;
+                            <a href="{% url 'logout' %}">Logout</a>&emsp;
+                        {% else %}
+                            <a href="{% url 'signup' %}">Sign Up</a>&emsp;
+                            <a href="{% url 'login' %}">Login</a>&emsp;
+                        {% endif %}
+                    </div>
+                </div>
+                
+            </div>
+        </div>
+    </div>
+    <div>
+        <div class="container box">
+            <div class="row">
+                <div class="col-1"></div>
+                <div class="col-10">
+                        {% block rpser_content %}
+                        {% endblock %}
+                </div>
+                <div class="col-1"></div>
+            </div>
+        </div>
+    </div>
+{% endblock %}
+{% block script %}
+    {% block rpser_script %}
     {% endblock %}
-    <hr/>
-    <footer>
-        <p>&copy; 2018</p>
-    </footer>
-</div>
-</body>
-</html>
+{% endblock %}
