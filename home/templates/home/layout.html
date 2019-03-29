@@ -5,6 +5,7 @@
 <head>
     <meta charset="utf-8"/>
     <title>{% block title %}{% endblock %}</title>
+    {% block scripts %}{% endblock %}
     <link href="https://stackpath.bootstrapcdn.com/bootstrap/4.1.3/css/bootstrap.min.css" rel="stylesheet">
     <link rel="stylesheet" type="text/css" href="{% static 'home/site.css' %}"/>
     <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
@@ -16,40 +17,23 @@
 </div>
 <div class="nav yellowstripe">
     <div class="container">
-        <div class="row">
-            <div class="col-1"></div>
-            <div class="col-10">
-                <a href="{% url 'index' %}" class="titletx">Kyle Chatman</a>&emsp;
-                <a href="{% url 'self' %}">Self</a>&emsp;
-                <a href="{% url 'SE' %}">SE</a>&emsp;
-                <a href="{% url 'CS' %}">CS</a>&ensp;-&ensp;
-                <a href="{% url 'rpser' %}">RPSer</a>
-            </div>
-            <div class="col-1"></div>
-        </div>
+        <a href="{% url 'index' %}" class="titletx">Kyle Chatman</a>&emsp;
+        <a href="{% url 'self' %}">Self</a>&emsp;
+        <a href="{% url 'SE' %}">SE</a>&emsp;
+        <a href="{% url 'CS' %}">CS</a>&ensp;-&ensp;
+        <a href="{% url 'rpser' %}">RPSer</a>
     </div>
 </div>
 <div>
     <div class="container">
-        <div class="row">
-            <div class="col-1"></div>
-            <div class="col-10"><br>
-                    {% block content %}
-                    {% endblock %}
-            </div>
-            <div class="col-1"></div>
-        </div>
+        <br>
+        {% block content %}
+        {% endblock %}
     </div>
 </div>
 <div class="footer yellowstripe">
     <div class="container">
-        <div class="row">
-            <div class="col-1"></div>
-            <div class="col-10">
-                &copy; 2019&emsp;kchatman@gmail.com
-            </div>
-            <div class="col-1"></div>
-        </div>
+        &copy; 2019&emsp;kchatman@gmail.com        
     </div>
 </div>
 

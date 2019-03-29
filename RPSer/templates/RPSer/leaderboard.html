@@ -1,0 +1,36 @@
+{% extends 'RPSer/layout.html' %}
+{% block rpser_content %}
+    <br>
+    <h2>Leaderboard</h2>
+    
+    <table class="table table-sm table-bordered center" style="width: auto">
+        <caption>Top win to loss ratio with over {{ qualcount }} throws</div></caption>    
+        <thead class="table-primary bg">
+            <tr>
+                <th scope="col">
+                    Rank
+                </th>
+                <th scope="col">
+                    Username
+                </th>
+                <th scope="col">
+                    Win/Loss
+                </th>
+                <th scope="col">
+                    Throws
+                </th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for userrow in table %}
+            <tr>
+                {% for item in userrow %}
+                <td>{{ item }}</td>
+                {% endfor %}
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+    <br>
+    
+{% endblock %}

@@ -2,6 +2,10 @@
 {% block title %}
     The RPSer
 {% endblock %}
+{% block scripts %}
+    {% block rpser_scripts %}
+    {% endblock %}
+{% endblock %}
 {% block content %}
 <div class="nav yellowstripe">
         <div class="container box">
@@ -9,8 +13,8 @@
                 <div class="col-12">
                     <a href="{% url 'rpser' %}" class="titletx">The RPSer</a>
                     <div class="right">
-                        {% if userinfo.loggedin %}
-                            {{userinfo.username}}&emsp;
+                        {% if loggedin %}
+                            {{username}}&emsp;
                             <a href="{% url 'logout' %}">Logout</a>&emsp;
                         {% else %}
                             <a href="{% url 'signup' %}">Sign Up</a>&emsp;
@@ -24,14 +28,8 @@
     </div>
     <div>
         <div class="container box">
-            <div class="row">
-                <div class="col-1"></div>
-                <div class="col-10">
-                        {% block rpser_content %}
-                        {% endblock %}
-                </div>
-                <div class="col-1"></div>
-            </div>
+            {% block rpser_content %}
+            {% endblock %}
         </div>
     </div>
 {% endblock %}

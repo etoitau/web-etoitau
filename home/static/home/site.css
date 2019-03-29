@@ -38,8 +38,19 @@ body {
     background-color: #F2F2F2;
     color: Black;
     font-family: "Courier New", "Courier", monospace;
-    font-size: 1em;
     padding-bottom: 75px;
+}
+
+@media screen and (max-width: 500px) {
+    body {
+        font-size: 10px;
+    }
+}
+
+@media screen and (min-width: 501px) {
+    body {
+        font-size: 2vw;
+    }
 }
 
 .footer{
@@ -73,6 +84,10 @@ img {
 
 .bigtx {
     font-size: 2em;
+}
+
+.table{
+    border: none!important;
 }
 
 table.table-bordered{

@@ -1,8 +1,14 @@
 {% extends "RPSer/layout.html" %}
+{% load static %}
+{% load humanize %}
+{% block rpser_scripts %}
+    <script src="http://ajax.googleapis.com/ajax/libs/jquery/1.7.1/jquery.min.js" type="text/javascript"></script>
+    <script src="{% static 'RPSer/js/js-cookie.js' %}"></script>
+{% endblock %}
 {% block rpser_content %}
     Test your skill against...
     <div class="bigtx">The RPSer!</div>
-    <table class="table table-sm table-bordered center" style="width: auto">
+    <table class="table table-sm table-bordered center table-responsive" style="width: auto">
         <caption><div id="modecheck">Check mode to start</div></caption>    
         <thead class="table-primary bg">
             <tr>
@@ -10,6 +16,9 @@
                 </th>
                 <th scope="col" colspan="3">
                     Score
+                </th>
+                <th scope="col" colspan="2">
+                    Stats
                 </th>
             </tr>
             <tr>
@@ -25,6 +34,12 @@
                 <th scope="col">
                     Draws
                 </th>
+                <th scope="col">
+                    <a style = "text-decoration:underline;" href = "{% url 'leaderboard' %}">Win/Loss</a>
+                </th>
+                <th scope="col">
+                    Throws
+                </th>
             </tr>
         </thead>
         <tbody>
@@ -34,6 +49,8 @@
                 <td><div id="usrpts"></div></td>
                 <td><div id="aivusrpts"></div></td>
                 <td><div id="vusrtie"></div></td>
+                <td><div id="usrw_l"></div></td>
+                <td><div id="usrcount"></div></td>
             </tr>
             <tr>
                 <td>All</td>
@@ -41,87 +58,237 @@
                 <td><div id="allpts"></div></td>
                 <td><div id="aivallpts"></div></td>
                 <td><div id="valltie"></div></td>
+                <td><div id="allw_l"></div></td>
+                <td><div id="allcount"></div></td>
             </tr>
         </tbody>
     </table>
         RPSer's throw: <div id="aithrow"></div><br>
-        Your throw: <input type="button" id="rock" value="Rock">
-            <input type="button" id="paper" value="Paper">
-            <input type="button" id="scissors" value="Scissors">
+        Your throw: <input type="button" id="rock" value="Rock" onclick="userthrew('R');">
+            <input type="button" id="paper" value="Paper" onclick="userthrew('P');">
+            <input type="button" id="scissors" value="Scissors" onclick="userthrew('S');">
+            <div id="userthrow"></div>
         <br>
         <div id="outcome"></div>
         <br>
+
 {% endblock %}
 {% block rpser_script %}
 <script>
-    var userinfoj = JSON.parse('{{ userinfoj | escapejs }}');
-    updatescoreboard();
-    var mode = "vall";
-    var rpser_last = "N";
-    var user_last = "N";
-    var nextthrow = "N"; // if N shows up this never changes and something's wrong
-    getthrow();
+    //$(document).ready(function () {
+        var allinfoj = JSON.parse('{{ allinfoj | escapejs }}');
+        var loggedin = parseInt('{{ loggedin | escapejs }}');
+        console.log("loggedin:")
+        console.log(loggedin)
+        var userinfoj = JSON.parse('{{ userinfoj | escapejs }}');
+        var modeid = allinfoj.id;
+        var mode = "vall";
+        var rpser_last = "N";
+        var user_last = "N";
+        var nextthrow = "N"; // if N shows up this never changes and something's wrong
+        var userthrow = "N";
+        var won = 0; // set -1 if user wins, 0 if draw, 1 if rpser wins
+        // set up csrftoken for ajax requests
+        var csrftoken = Cookies.get('csrftoken')
+        function csrfSafeMethod(method) {
+            // these HTTP methods do not require CSRF protection
+            return (/^(GET|HEAD|OPTIONS|TRACE)$/.test(method));
+        }
+        $.ajaxSetup({
+            beforeSend: function(xhr, settings) {
+                if (!csrfSafeMethod(settings.type) && !this.crossDomain) {
+                    xhr.setRequestHeader("X-CSRFToken", csrftoken);
+                }
+            }
+        });
+        
+        
+        
 
-    function updatescoreboard() {
-        url = "RPSer/getscores/";
-        jQuery.ajax({
-            type: "POST",
-            url: url,
-            data: {username: userinfoj.username},
-            success: function (data) {
-                var scores = JSON.parse('{{ data | escapejs }}');
-                document.getElementById("usrpts").innerHTML = scores.userwins;
-                document.getElementById("aivusrpts").innerHTML = scores.RPSerwins;
-                document.getElementById("vusrtie").innerHTML = scores.draws;
-            }
-        });
-        jQuery.ajax({
-            type: "POST",
-            url: url,
-            data: {username: "all"},
-            success: function (data) {
-                var scores = JSON.parse('{{ data | escapejs }}');
-                document.getElementById("allpts").innerHTML = scores.userwins;
-                document.getElementById("aivallpts").innerHTML = scores.RPSerwins;
-                document.getElementById("valltie").innerHTML = scores.draws;
-            }
-        });
-    }
-    // if personal radio changes... 
-    function clickedvusr() {
-        if(userinfoj.loggedin) {
-            mode = "vusr";
-            document.getElementById("vall").checked = false;
-            document.getElementById("modecheck").innerHTML = 'Select "All" to play against general AI';
+        $(document).ready(function () {
             getthrow();
-        }  
-        else {
-            document.getElementById("vusr").checked = false;
-            document.getElementById("modecheck").innerHTML = "Log in to play against personalized AI";
-        }  
-    };
-    function clickedvall() {
-        document.getElementById("vusr").checked = false;
-        mode = "vall";
-        document.getElementById("modecheck").innerHTML = 'Select "Personal" to play against personalized AI';
-        //throw = getthrow(username, current);
-    };
-    function getthrow() {
-        url = "RPSer/getthrow/";
-        jQuery.ajax({
-            type: "POST",
-            url: url,
-            data: {username: userinfoj.username, rpser_last: rpser_last, user_last: user_last},
-            success: function (data) {
-                nextthrow = JSON.parse('{{ data | escapejs }}');
-            }
+            console.log("initialize nextthrow:")
+            console.log(nextthrow)
+            scoreboard();
         });
-    };
-    // function userthrew(userthrow) {
-    // show rpser's throw
-    // update brain
-    // update scoreboard    
-    // }
+
+        var blankSrc = '{% static "RPSer/media/blank.png" %}';
+        var rSrc = '{% static "RPSer/media/rblock.png" %}';
+        var pSrc = '{% static "RPSer/media/pblock.png" %}';
+        var sSrc = '{% static "RPSer/media/sblock.png" %}';
+        var aiThrowImg=new Image();
+        aiThrowImg.src=blankSrc;
+        var userThrowImg=new Image();
+        userThrowImg.src=blankSrc;
+        document.getElementById('aithrow').appendChild(aiThrowImg);
+        document.getElementById("userthrow").appendChild(userThrowImg);
+        
+        function scoreboard() {
+            // if logged in, update user's scores
+            if(loggedin) {
+                document.getElementById("usrpts").innerHTML = userinfoj.wins;
+                document.getElementById("aivusrpts").innerHTML = userinfoj.losses;
+                document.getElementById("vusrtie").innerHTML = userinfoj.count - userinfoj.wins - userinfoj.losses;
+                document.getElementById("usrw_l").innerHTML = (userinfoj.w_l).toFixed(3);
+                document.getElementById("usrcount").innerHTML = userinfoj.count;
+            };        
+            // always update scores for 'all'
+            document.getElementById("allpts").innerHTML = allinfoj.wins;
+            document.getElementById("aivallpts").innerHTML = allinfoj.losses;
+            document.getElementById("valltie").innerHTML = allinfoj.count - allinfoj.wins - allinfoj.losses;
+            document.getElementById("allw_l").innerHTML = (allinfoj.w_l).toFixed(3);
+            document.getElementById("allcount").innerHTML = allinfoj.count;
+        }
+        
+        
+        // if personal radio changes... 
+        function clickedvusr() {
+            if (loggedin) {
+                mode = "vusr";
+                modeid = userinfoj.id;
+                document.getElementById("vall").checked = false;
+                document.getElementById("modecheck").innerHTML = 'Select "All" to play against general AI';
+                getthrow();
+            }  
+            else {
+                document.getElementById("vusr").checked = false;
+                document.getElementById("modecheck").innerHTML = "Log in to play against personalized AI";
+            }  
+        };
+        function clickedvall() {
+            mode = "vall";
+            modeid = allinfoj.id;
+            document.getElementById("vusr").checked = false;
+            document.getElementById("modecheck").innerHTML = 'Select "Personal" to play against personalized AI';
+            nextthrow = getthrow();
+        };
+        function getthrow() {
+            url = "getthrow/";
+            jQuery.ajax({
+                type: "POST",
+                url: url,
+                data: JSON.stringify({userid: modeid, rpser_last: rpser_last, user_last: user_last}),
+                dataType: 'json',
+                success: function (data) {
+                    console.log("getthrow got:")
+                    console.log(data)
+                    nextthrow = data;
+                    console.log("new nextthrow:")
+                    console.log(nextthrow)
+                },
+                error: function () {
+                    console.log("error getting throw")
+                }
+            });
+        };
+        function checkwin() {
+            console.log("checking win...")
+            console.log("rpser throw:")
+            console.log(nextthrow)
+            console.log("user throw:")
+            console.log(userthrow)
+            if ((nextthrow == 'R' & userthrow == 'S') |
+                (nextthrow == 'P' & userthrow == 'R') |
+                (nextthrow == 'S' & userthrow == 'P')) {
+                    won = 1;
+                } else if ((nextthrow == 'R' & userthrow == 'P') |
+                (nextthrow == 'P' & userthrow == 'S') |
+                (nextthrow == 'S' & userthrow == 'R')) {
+                    won = -1;
+                } else {
+                    won = 0;
+                }               
+        }
+        function userthrew(throwbutton) {
+            // show user's throw
+            switch(throwbutton) { 
+                case "R":
+                    userThrowImg.src=rSrc;
+                    break;
+                case "P":
+                    userThrowImg.src=pSrc;
+                    break;
+                case "S":
+                    userThrowImg.src=sSrc;
+                    break;
+                default:
+                    document.getElementById('userthrow').innerHTML = "USER THROW ERROR!";
+            }
+            // show rpser's throw
+            oldImg = document.getElementById('aithrow');
+            switch(nextthrow) {
+                case "R":
+                    aiThrowImg.src=rSrc;
+                    break;
+                case "P":
+                    //document.getElementById('aithrow').replaceChild(pblock, oldImg);
+                    aiThrowImg.src=pSrc;
+                    break;
+                case "S":
+                    aiThrowImg.src=sSrc;
+                    break;
+                default:
+                    document.getElementById('aithrow').innerHTML = "RPSer THROW ERROR!";
+            }
+            userthrow = throwbutton;
+            checkwin();
+            switch(won) {
+                case 1:
+                    document.getElementById("outcome").innerHTML = "RPSer Won!";
+                    if (mode == 'vusr') {userinfoj.losses++;}
+                    allinfoj.losses++ 
+                    break;
+                case -1:
+                    document.getElementById("outcome").innerHTML = "You Won!";
+                    if (mode == 'vusr') {userinfoj.wins++;}
+                    allinfoj.wins++
+                    break;
+                case 0:
+                    document.getElementById("outcome").innerHTML = "Draw";
+                    break;
+                default:
+                    document.getElementById("outcome").innerHTML = "ERROR";
+            }
+            if (mode == 'vusr') {userinfoj.count++;}
+            allinfoj.count++;
+            if (userinfoj.losses != 0) {
+                userinfoj.w_l = userinfoj.wins / userinfoj.losses;
+            } else {
+                userinfoj.w_l = userinfoj.wins;
+            }
+            if (allinfoj.losses != 0) {
+                allinfoj.w_l = allinfoj.wins / allinfoj.losses;
+            } else {
+                allinfoj.w_l = allinfoj.wins
+            }
+            logxp();
+            user_last = userthrow;
+            rpser_last = nextthrow;
+            scoreboard();    
+            getthrow()
+        }
+        function logxp() {
+            url = "logxp/";
+            jQuery.ajax({
+                type: "POST",
+                url: url,
+                data: JSON.stringify({
+                    userid: modeid, 
+                    rpser_last: rpser_last, 
+                    user_last: user_last, 
+                    rpser_throw: nextthrow, 
+                    rpser_win: won
+                }),
+                dataType: 'json',
+                success: function (data) {
+                    console.log("logged xp")
+                },
+                error: function () {
+                    console.log("error logging xp")
+                }
+            });
+        }
+    //});
 
 </script>
 {% endblock %}
