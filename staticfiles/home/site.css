@@ -17,26 +17,40 @@
 
 .yellowstripe {
     background-color: #FED768;
-    background-image: url("/media/halftone-yellow.png");
+    background-image: url("media/halftone-yellow.png");
     color: Black;
     font-family: "Courier New", "Courier", monospace;
     font-size: 1.2em;
-    font-weight: 600;
 }
 
-a {
-    text-decoration: none!important;
-    color: inherit!important;
+.bg {
+    background-color: #FED768;
+    background-image: url("media/halftone-yellow.png");
+}
+
+a, a:hover {
+    text-decoration: none;
+    color: inherit;
 }
 
 body {
-    background-image: url("/media/topography.png");
+    background-image: url("media/topography.png");
     background-color: #F2F2F2;
     color: Black;
-    font-family: "Courier New", "Courier", monospace!important;
-    font-size: 1em;
+    font-family: "Courier New", "Courier", monospace;
     padding-bottom: 75px;
-    font-weight: 600;
+}
+
+@media screen and (max-width: 500px) {
+    body {
+        font-size: 10px;
+    }
+}
+
+@media screen and (min-width: 501px) {
+    body {
+        font-size: 2vw;
+    }
 }
 
 .footer{
@@ -54,4 +68,39 @@ img {
 
 .avoidwrap {
     display:inline-block; 
+}
+
+.box {
+    border-style: none solid solid solid;
+}
+
+.right {
+    float: right;
+}
+
+.titletx {
+    font-weight: 600;
+}
+
+.bigtx {
+    font-size: 2em;
+}
+
+.table{
+    border: none!important;
+}
+
+table.table-bordered{
+    border:2px solid black;
+    margin-top:20px;
+}
+table.table-bordered > thead > tr > th{
+    border:1px solid black;
+}
+table.table-bordered > tbody > tr > td{
+    border:1px solid black;
+}
+
+.center {
+    text-align: center
 }

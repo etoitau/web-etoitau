@@ -13,8 +13,8 @@
                 <div class="col-12">
                     <a href="{% url 'rpser' %}" class="titletx">The RPSer</a>
                     <div class="right">
-                        {% if loggedin %}
-                            {{username}}&emsp;
+                        {% if user.is_authenticated %}
+                            {{user.username}}&emsp;
                             <a href="{% url 'logout' %}">Logout</a>&emsp;
                         {% else %}
                             <a href="{% url 'signup' %}">Sign Up</a>&emsp;

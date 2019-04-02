@@ -1,10 +1,12 @@
 from django.db import models
 from django.db.models import Q, Sum
 from django.core.exceptions import ObjectDoesNotExist
+import logging
 
-# in views can say <new_inst> = Name.objects.create(<field>=<new data>) to make new instance of Name called <new_inst>
-# say <new_inst>.save() to save to database
-# can say <Name>.objects.all() to get list of all <Name> objects (i.e. list of all names in Name) 
+logging.basicConfig(level=logging.DEBUG)
+logger = logging.getLogger(__name__)
+
+# RPSer/models.py
 
 class User(models.Model):
     id = models.AutoField(primary_key=True)
@@ -21,15 +23,6 @@ class User(models.Model):
             models.Index(fields=['id', 'username', 'w_l', 'count']),
         ]
 
-#    def __init__(self, id, username, wins, losses, w_l, count, *args, **kwargs):
-#        super(User, self).__init__(*args, **kwargs)
-#        self.id = id
-#        self.username = username
-#        self.wins = wins
-#        self.losses = losses
-#        self.w_l = w_l
-#        self.count = count
-
     def __str__(self):
         return f'{self.id}, {self.username}'
 
@@ -37,6 +30,7 @@ class User(models.Model):
 class RackBrain(models.Manager):
     def scoreboard(self, user):
         # method for use with Brain like: Brain.objects.scoreboard("kchatman")
+        logger.info("scoreboard called")
         scores = dict()
         try:
             scores["userwins"] = super().get_queryset().filter(Q(userid=user) & ((Q(rpser_last='R') & Q(user_last='P')) |
@@ -56,6 +50,8 @@ class RackBrain(models.Manager):
                 (Q(rpser_last='S') & Q(user_last='S')))).aggregate(Sum('count'))
         except:
             scores["draws"] = 0
+        logger.debug("scores:")
+        logger.debug(scores)
         return scores
     
     def check_xp(self, state):
@@ -78,6 +74,7 @@ class RackBrain(models.Manager):
                 data[throw] = dict(score = 0, count = 0)
         return data
 
+# database of info about all plays RPSer has seen
 class Brain(models.Model):
     id = models.AutoField(primary_key=True)
     userid = models.ForeignKey(User, on_delete=models.CASCADE)

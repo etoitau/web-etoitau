@@ -44,6 +44,8 @@ DEBUG = config('DEBUG', default=False, cast=bool)
 
 ALLOWED_HOSTS = config('ALLOWED_HOSTS', cast=Csv())
 
+#DATABASE_URL = config('DATABASE_URL')
+
 
 # Application definition
 
@@ -100,10 +102,17 @@ WSGI_APPLICATION = 'web_project.wsgi.application'
 # https://docs.djangoproject.com/en/2.1/ref/settings/#databases
 
 DATABASES = {}
-DATABASES = {
-    'default': dj_database_url.config(conn_max_age=600)
+DATABASES['default'] = dj_database_url.config(default='sqlite:///db.sqlite3', conn_max_age=600)
+#DATABASES = {
+#    'default': dj_database_url.config(conn_max_age=600, ssl_require=True)
 # prev: 'default': dj_database_url.config(default=config('DATABASE_URL'))    
-}
+#}
+#DATABASES['default']['ENGINE'] = 'django.db.backends.sqlite3'
+#DATABASES['default'] = dj_database_url.config(conn_max_age=600)
+#DATABASES['default'].update(dj_database_url.config(default=DATABASE_URL))
+# Change 'default' database configuration with $DATABASE_URL.
+#DATABASES['default'].update(dj_database_url.config(conn_max_age=500, ssl_require=True))
+#DATABASES['default'] = dj_database_url.config(default='DATABASE_URL')
 
 # Password validation
 # https://docs.djangoproject.com/en/2.1/ref/settings/#auth-password-validators
@@ -138,9 +147,6 @@ USE_I18N = True
 USE_L10N = True
 
 USE_TZ = True
-
-# Change 'default' database configuration with $DATABASE_URL.
-DATABASES['default'].update(dj_database_url.config(conn_max_age=500, ssl_require=True))
 
 # Honor the 'X-Forwarded-Proto' header for request.is_secure()
 SECURE_PROXY_SSL_HEADER = ('HTTP_X_FORWARDED_PROTO', 'https')
@@ -182,4 +188,4 @@ MEDIA_ROOT = os.path.join(BASE_DIR, "live-static-files", "media-root")
 
 django_heroku.settings(locals())
 
-del DATABASES['default']['OPTIONS']['sslmode']
+#del DATABASES['default']['OPTIONS']['sslmode']
