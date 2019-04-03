@@ -151,6 +151,9 @@ USE_TZ = True
 # Honor the 'X-Forwarded-Proto' header for request.is_secure()
 SECURE_PROXY_SSL_HEADER = ('HTTP_X_FORWARDED_PROTO', 'https')
 
+#SESSION_COOKIE_SECURE = True
+#CSRF_COOKIE_SECURE = True
+
 # Allow all host headers
 ALLOWED_HOSTS = ['*']
 

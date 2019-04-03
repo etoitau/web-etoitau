@@ -82,6 +82,8 @@ def getthrow(request):
     json_data = json.loads(request.body)
     xp = Brain.rackbrain_objects.check_xp(json_data)
     # start by picking Rock and then see if paper or scissors would be better
+    #data = {}
+    #data.update(csrf(request))
     throw = 'R'
     maxscore = xp[throw]['score']
     logger.debug("%s: %.3f", throw, maxscore)
@@ -92,6 +94,7 @@ def getthrow(request):
             throw = option
             maxscore = optscore
     logger.info("getthrow chose: %s", throw)
+    #data['throw'] = JsonResponse(throw, safe=False)
     return JsonResponse(throw, safe=False)
 
 # AJAX data from page to be added to Brain

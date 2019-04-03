@@ -111,7 +111,10 @@
             }
         }
     });
-
+    
+    console.log("csrftoken:")
+    console.log(csrftoken)
+    
     $(document).ready(function () {
         getthrow();
         console.log("initialize nextthrow:")
@@ -174,7 +177,7 @@
         jQuery.ajax({
             type: "POST",
             url: url,
-            data: JSON.stringify({userid: modeid, rpser_last: rpser_last, user_last: user_last}),
+            data: JSON.stringify({userid: modeid, rpser_last: rpser_last, user_last: user_last}), 
             dataType: 'json',
             success: function (data) {
                 console.log("getthrow got:")
