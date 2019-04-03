@@ -62,13 +62,20 @@ def signup(request):
     if request.method == 'POST':
         logger.info("signup called: POST")
         form = UserCreationForm(request.POST)
+        logger.debug("form is valid:")
+        logger.debug(form.is_valid())
         if form.is_valid():
             form.save()
             username = form.cleaned_data.get('username')
+            logger.debug("username: %s", username)
             raw_password = form.cleaned_data.get('password1')
             user = authenticate(username=username, password=raw_password)
+            logger.debug("result of authenticate:")
+            logger.debug(user)
             login(request, user)
             return redirect('rpser')
+        else:
+            return render(request, 'RPSer/signup.html', {'form': form})
     else:
         logger.info("signup called: GET")
         form = UserCreationForm()
