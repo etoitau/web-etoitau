@@ -81,11 +81,12 @@
         </tr>
         <tr><td colspan=2><div id="outcome"></div></td></tr>
     </table>
-        <br>
+    <br>
 
 {% endblock %}
 {% block rpser_script %}
 <script type="text/javascript">
+    console.log("start rpser javascript")
     var allinfoj = JSON.parse('{{ allinfoj | escapejs }}');
     var loggedin = parseInt('{{ loggedin | escapejs }}');
     console.log("loggedin:")
@@ -112,13 +113,13 @@
         }
     });
     
-    console.log("csrftoken:")
-    console.log(csrftoken)
+    // console.log("csrftoken:")
+    // console.log(csrftoken)
     
     $(document).ready(function () {
         getthrow();
-        console.log("initialize nextthrow:")
-        console.log(nextthrow)
+        console.log("initializing nextthrow")
+        // console.log(nextthrow)
         scoreboard();
     });
 
@@ -134,6 +135,7 @@
     document.getElementById("userthrow").appendChild(userThrowImg);
 
     function scoreboard() {
+        console.log("scoreboard called")
         // if logged in, update user's scores
         if(loggedin) {
             document.getElementById("usrpts").innerHTML = userinfoj.wins;
@@ -153,6 +155,7 @@
 
     // if personal radio changes... 
     function clickedvusr() {
+        console.log("clickedvusr")
         if (loggedin) {
             mode = "vusr";
             modeid = userinfoj.id;
@@ -166,6 +169,7 @@
         }  
     };
     function clickedvall() {
+        console.log("clickedvall")
         mode = "vall";
         modeid = allinfoj.id;
         document.getElementById("vusr").checked = false;
@@ -173,6 +177,7 @@
         nextthrow = getthrow();
     };
     function getthrow() {
+        console.log("getthrow called")
         url = "getthrow/";
         jQuery.ajax({
             type: "POST",
@@ -180,11 +185,11 @@
             data: JSON.stringify({userid: modeid, rpser_last: rpser_last, user_last: user_last}), 
             dataType: 'json',
             success: function (data) {
-                console.log("getthrow got:")
-                console.log(data)
+                // console.log("getthrow got:")
+                // console.log(data)
                 nextthrow = data;
-                console.log("new nextthrow:")
-                console.log(nextthrow)
+                // console.log("new nextthrow:")
+                // console.log(nextthrow)
             },
             error: function () {
                 console.log("error getting throw")
@@ -193,10 +198,10 @@
     };
     function checkwin() {
         console.log("checking win...")
-        console.log("rpser throw:")
-        console.log(nextthrow)
-        console.log("user throw:")
-        console.log(userthrow)
+        // console.log("rpser throw:")
+        // console.log(nextthrow)
+        // console.log("user throw:")
+        // console.log(userthrow)
         if ((nextthrow == 'R' & userthrow == 'S') |
             (nextthrow == 'P' & userthrow == 'R') |
             (nextthrow == 'S' & userthrow == 'P')) {
@@ -210,6 +215,7 @@
             }               
     }
     function userthrew(throwbutton) {
+        console.log("user chose throw")
         // show user's throw
         switch(throwbutton) { 
             case "R":
@@ -231,7 +237,6 @@
                 aiThrowImg.src=rSrc;
                 break;
             case "P":
-                //document.getElementById('aithrow').replaceChild(pblock, oldImg);
                 aiThrowImg.src=pSrc;
                 break;
             case "S":
@@ -278,6 +283,7 @@
         getthrow()
     }
     function logxp() {
+        console.log("logging play to memory")
         url = "logxp/";
         jQuery.ajax({
             type: "POST",
