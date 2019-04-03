@@ -104,3 +104,7 @@ table.table-bordered > tbody > tr > td{
 .center {
     text-align: center
 }
+
+.highlight {
+    background-color: #ffedbc;
+}

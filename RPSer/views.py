@@ -244,5 +244,6 @@ def leaderboard(request):
         'qualcount' : qualcount,
         'numscores' : numscores,
         'loggedin' : loggedin,
+        'username' : thisuser.username,
     }
     return render(request, 'RPSer/leaderboard.html', context)

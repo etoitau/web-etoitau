@@ -23,7 +23,9 @@
         </thead>
         <tbody>
             {% for userrow in table %}
-            <tr>
+            {% if userrow.1 == username %}<tr class="highlight">
+            {% else %}<tr>
+            {% endif %}
                 {% for item in userrow %}
                 <td>{{ item }}</td>
                 {% endfor %}
