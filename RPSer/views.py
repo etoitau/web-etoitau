@@ -88,20 +88,18 @@ def getthrow(request):
     # load from json and use custom manager to get relavent info from Brain
     json_data = json.loads(request.body)
     xp = Brain.rackbrain_objects.check_xp(json_data)
+    
     # start by picking Rock and then see if paper or scissors would be better
-    #data = {}
-    #data.update(csrf(request))
     throw = 'R'
-    maxscore = xp[throw]['score']
+    maxscore = xp[throw]['score'] + random()
     logger.debug("%s: %.3f", throw, maxscore)
     for option in ["P", "S"]:
-        optscore = xp[option]["score"]
+        optscore = xp[option]["score"] + random()
         logger.debug("%s: %.3f", option, optscore)
         if optscore > maxscore:
             throw = option
             maxscore = optscore
     logger.info("getthrow chose: %s", throw)
-    #data['throw'] = JsonResponse(throw, safe=False)
     return JsonResponse(throw, safe=False)
 
 # AJAX data from page to be added to Brain
@@ -155,6 +153,14 @@ def logxp(request):
         aobj.wins, aobj.losses, aobj.count
         )
 
+    # set score
+    if json_data['rpser_win'] > 0:
+        thisscore = 10
+    elif json_data['rpser_win'] < 0:
+        thisscore = -9
+    else:
+        thisscore = -1
+
     # update knowledge in Brain
     logger.info("Updating Brain for user")
     obj, created = Brain.objects.get_or_create(
@@ -162,7 +168,7 @@ def logxp(request):
         user_last = json_data['user_last'],
         rpser_last = json_data['rpser_last'],
         rpser_next = json_data['rpser_throw'],
-        defaults = {'count':1, 'score':json_data['rpser_win']}
+        defaults = {'count':1, 'score':thisscore}
     )
     logger.debug('get/create Brain object:')
     logger.debug(obj)
@@ -171,7 +177,7 @@ def logxp(request):
     #)
     if not created:
         obj.count += 1
-        obj.score += json_data['rpser_win']
+        obj.score += thisscore
         obj.save()
         logger.debug("Score updated to: %i and count updated to: %i", obj.score, obj.count)
 
@@ -183,7 +189,7 @@ def logxp(request):
         user_last = json_data['user_last'],
         rpser_last = json_data['rpser_last'],
         rpser_next = json_data['rpser_throw'],
-        defaults = {'count':1, 'score':json_data['rpser_win']}
+        defaults = {'count':1, 'score':thisscore}
         )
         logger.debug('get/create Brain object:')
         logger.debug(obj)
@@ -192,7 +198,7 @@ def logxp(request):
         #)
         if not created:
             obj.count += 1
-            obj.score += json_data['rpser_win']
+            obj.score += thisscore
             obj.save()
             logger.debug("Score updated to: %i and count updated to: %i", obj.score, obj.count)
     
