@@ -234,7 +234,6 @@ def leaderboard(request):
             # if all top users have already been shown we can quit now
             if i > numscores:
                 break
-            i += 1
         # if record is not this user and one of top, add to table
         elif i < numscores and sorteduser.count > qualcount:
             table.append([
@@ -243,7 +242,7 @@ def leaderboard(request):
                 sorteduser.w_l,
                 sorteduser.count
             ]) 
-            i += 1
+        i +=1
     # data to send to page    
     context = {
         'table' : table,
