@@ -1,21 +1,27 @@
-A place for my personal webapp experiments.
-https://etoitau-web.herokuapp.com/
+# The RPSer
+A bot that tries to learn from your past plays to beat you at Rock Paper Scissors.
 
-Contains:
-  Personal homepage (static)
-  The RPSer (app) - see below
-  
-Uses:
-  Django Web framework (Python)
-  Gunicorn server,
-  Whitenoise for static file serving
-  Heroku cloud platform.
-  Database: SQLite in the development environment and PostgreSQL in production
-  Developed in Visual Studio Code
-  Version control uses Sourcetree and GitHub
+## License
+Copyright 2019 [Kyle Chatman](http://www.kchatman.com)
 
+This program is free software: you can redistribute it and/or modify
+it under the terms of the GNU General Public License as published by
+the Free Software Foundation, either version 3 of the License, or
+(at your option) any later version.
 
-The RPSer:
-RPSer is a bot that tries to learn from your past plays to beat you at Rock Paper Scissors
-See https://www.youtube.com/watch?v=UeKPy6mmQ8A for a very short intro video
-Enjoy!
+This program is distributed in the hope that it will be useful,
+but WITHOUT ANY WARRANTY; without even the implied warranty of
+MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+GNU General Public License for more details.
+
+You should have received a copy of the GNU General Public License
+along with this program.  If not, see <https://www.gnu.org/licenses/>
+
+## Live at
+https://etoitau-web.herokuapp.com/RPSer/
+
+## Source at
+https://github.com/etoitau/web-etoitau
+
+## Demo video
+https://www.youtube.com/watch?v=UeKPy6mmQ8A
