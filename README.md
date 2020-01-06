@@ -2,7 +2,7 @@
 A bot that tries to learn from your past plays to beat you at Rock Paper Scissors.
 
 ## License
-Copyright 2019 [Kyle Chatman](http://www.kchatman.com)
+Copyright 2019-2020 [Kyle Chatman](http://www.kchatman.com)
 
 This program is free software: you can redistribute it and/or modify
 it under the terms of the GNU General Public License as published by
